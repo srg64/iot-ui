@@ -1,0 +1,128 @@
+<edmx:Edmx
+    xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" Version="1.0">
+    <edmx:DataServices
+        xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" m:DataServiceVersion="1.0">
+        <Schema
+            xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="IOTDB">
+            <EntityType Name="Namespace">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="Id" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="NamespaceName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Version" Type="Edm.DateTime"/>
+                <NavigationProperty Name="SensorDataDetails" Relationship="IOTDB.Namespace_SensorData_One_Many0" FromRole="Namespace" ToRole="SensorData"/>
+            </EntityType>
+            <EntityType Name="SensorData">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="CreatedAt" Type="Edm.DateTime" Nullable="false"/>
+                <Property Name="HostName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Id" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="NamespaceName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="SensorName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="SensorType" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Unit" Type="Edm.String" Nullable="false" MaxLength="50"/>
+                <Property Name="Value" Type="Edm.Double" Nullable="false"/>
+                <Property Name="Version" Type="Edm.DateTime"/>
+                <NavigationProperty Name="HostDetails" Relationship="IOTDB.SensorData_Host_One_ZeroToOne0" FromRole="SensorData" ToRole="Host"/>
+                <NavigationProperty Name="NamespaceDetails" Relationship="IOTDB.SensorData_Namespace_One_ZeroToOne0" FromRole="SensorData" ToRole="Namespace"/>
+                <NavigationProperty Name="SensorDetails" Relationship="IOTDB.SensorData_Sensor_One_ZeroToOne0" FromRole="SensorData" ToRole="Sensor"/>
+            </EntityType>
+            <EntityType Name="Sensor">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="HostName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Id" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="SensorName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="SensorType" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Unit" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Version" Type="Edm.DateTime"/>
+                <NavigationProperty Name="HostDetails" Relationship="IOTDB.Sensor_Host_One_ZeroToOne0" FromRole="Sensor" ToRole="Host"/>
+                <NavigationProperty Name="SensorDataDetails" Relationship="IOTDB.Sensor_SensorData_One_Many0" FromRole="Sensor" ToRole="SensorData"/>
+            </EntityType>
+            <EntityType Name="Host">
+                <Key>
+                    <PropertyRef Name="Id"/>
+                </Key>
+                <Property Name="HostName" Type="Edm.String" Nullable="false" MaxLength="255"/>
+                <Property Name="Id" Type="Edm.Int64" Nullable="false"/>
+                <Property Name="Version" Type="Edm.DateTime"/>
+                <NavigationProperty Name="SensorDataDetails" Relationship="IOTDB.Host_SensorData_One_Many0" FromRole="Host" ToRole="SensorData"/>
+                <NavigationProperty Name="SensorDetails" Relationship="IOTDB.Host_Sensor_One_Many0" FromRole="Host" ToRole="Sensor"/>
+            </EntityType>
+            <Association Name="SensorData_Host_One_ZeroToOne0">
+                <End Type="IOTDB.SensorData" Multiplicity="1" Role="SensorData"/>
+                <End Type="IOTDB.Host" Multiplicity="0..1" Role="Host"/>
+            </Association>
+            <Association Name="Host_SensorData_One_Many0">
+                <End Type="IOTDB.Host" Multiplicity="1" Role="Host"/>
+                <End Type="IOTDB.SensorData" Multiplicity="*" Role="SensorData"/>
+            </Association>
+            <Association Name="SensorData_Namespace_One_ZeroToOne0">
+                <End Type="IOTDB.SensorData" Multiplicity="1" Role="SensorData"/>
+                <End Type="IOTDB.Namespace" Multiplicity="0..1" Role="Namespace"/>
+            </Association>
+            <Association Name="SensorData_Sensor_One_ZeroToOne0">
+                <End Type="IOTDB.SensorData" Multiplicity="1" Role="SensorData"/>
+                <End Type="IOTDB.Sensor" Multiplicity="0..1" Role="Sensor"/>
+            </Association>
+            <Association Name="Sensor_SensorData_One_Many0">
+                <End Type="IOTDB.Sensor" Multiplicity="1" Role="Sensor"/>
+                <End Type="IOTDB.SensorData" Multiplicity="*" Role="SensorData"/>
+            </Association>
+            <Association Name="Sensor_Host_One_ZeroToOne0">
+                <End Type="IOTDB.Sensor" Multiplicity="1" Role="Sensor"/>
+                <End Type="IOTDB.Host" Multiplicity="0..1" Role="Host"/>
+            </Association>
+            <Association Name="Namespace_SensorData_One_Many0">
+                <End Type="IOTDB.Namespace" Multiplicity="1" Role="Namespace"/>
+                <End Type="IOTDB.SensorData" Multiplicity="*" Role="SensorData"/>
+            </Association>
+            <Association Name="Host_Sensor_One_Many0">
+                <End Type="IOTDB.Host" Multiplicity="1" Role="Host"/>
+                <End Type="IOTDB.Sensor" Multiplicity="*" Role="Sensor"/>
+            </Association>
+            <EntityContainer Name="IOTDBContainer" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Namespaces" EntityType="IOTDB.Namespace"/>
+                <EntitySet Name="SensorDatas" EntityType="IOTDB.SensorData"/>
+                <EntitySet Name="Sensors" EntityType="IOTDB.Sensor"/>
+                <EntitySet Name="Hosts" EntityType="IOTDB.Host"/>
+                <AssociationSet Name="SensorData_Host_One_ZeroToOne0Set" Association="IOTDB.SensorData_Host_One_ZeroToOne0">
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                    <End EntitySet="Hosts" Role="Host"/>
+                </AssociationSet>
+                <AssociationSet Name="Host_SensorData_One_Many0Set" Association="IOTDB.Host_SensorData_One_Many0">
+                    <End EntitySet="Hosts" Role="Host"/>
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                </AssociationSet>
+                <AssociationSet Name="SensorData_Namespace_One_ZeroToOne0Set" Association="IOTDB.SensorData_Namespace_One_ZeroToOne0">
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                    <End EntitySet="Namespaces" Role="Namespace"/>
+                </AssociationSet>
+                <AssociationSet Name="SensorData_Sensor_One_ZeroToOne0Set" Association="IOTDB.SensorData_Sensor_One_ZeroToOne0">
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                    <End EntitySet="Sensors" Role="Sensor"/>
+                </AssociationSet>
+                <AssociationSet Name="Sensor_SensorData_One_Many0Set" Association="IOTDB.Sensor_SensorData_One_Many0">
+                    <End EntitySet="Sensors" Role="Sensor"/>
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                </AssociationSet>
+                <AssociationSet Name="Sensor_Host_One_ZeroToOne0Set" Association="IOTDB.Sensor_Host_One_ZeroToOne0">
+                    <End EntitySet="Sensors" Role="Sensor"/>
+                    <End EntitySet="Hosts" Role="Host"/>
+                </AssociationSet>
+                <AssociationSet Name="Namespace_SensorData_One_Many0Set" Association="IOTDB.Namespace_SensorData_One_Many0">
+                    <End EntitySet="Namespaces" Role="Namespace"/>
+                    <End EntitySet="SensorDatas" Role="SensorData"/>
+                </AssociationSet>
+                <AssociationSet Name="Host_Sensor_One_Many0Set" Association="IOTDB.Host_Sensor_One_Many0">
+                    <End EntitySet="Hosts" Role="Host"/>
+                    <End EntitySet="Sensors" Role="Sensor"/>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
