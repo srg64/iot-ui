@@ -1,0 +1,35 @@
+{
+    "application": {
+        "id": "",
+        "title": "UI for IoT Sensors",
+        "description": "Showcase scenario for integration of IoT sensors",
+        "type": "SAP_UI5_Component",
+        "componentUrl": "/",
+        "appUrl": "#iotui-Display",
+        "navigationComponentName": "de.asr.iot.ui5.iotui",
+        "intentSemanticObject": "iot-ui",
+        "intentAction": "Display",
+        "html5ApplicationName": "iotui",
+        "HCPParentApplicationName": ""
+    },
+    "assignment": {
+        "groups": [
+            "00000000-0000-1111-0000-00000000"
+        ],
+        "contentPackages": [
+            "00000000-0000-2222-0000-00000000"
+        ],
+        "categories": []
+    },
+    "tile": {
+        "type": "StaticTile",
+        "title": "UI for IoT Sensors",
+        "subtitle": "Showcase scenario for integration of IoT sensors",
+        "searchKeywords": "UI for IoT Sensors,Showcase scenario for integration of IoT sensors",
+        "displayIconUrl": "sap-icon://it-host",
+        "displayInfoText": "",
+        "size": "1x1",
+        "serviceURL": "",
+        "refreshInterval": ""
+    }
+}

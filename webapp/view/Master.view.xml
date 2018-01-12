@@ -30,6 +30,31 @@
 				visible="{device>/support/touch}"
 				refresh="onRefresh" />
 			<!-- For client side filtering add this to the items attribute:  parameters: {operationMode: 'Client'}}" -->
+			<ComboBox
+				id="combobox"
+				showSecondaryValues= "false"
+				items="{
+					path: 'masterView>/data/Namespaces'
+				}"
+				selectedKey="{masterView>/data/Namespaces/0/key}"
+				selectionChange="onSelectionChange">
+				<core:ListItem key="{masterView>key}" text="{masterView>text}"/>
+			</ComboBox>
+			<Tree
+				id="tree"
+				items="{
+					path: 'masterView>/data/Hosts',
+					parameters: {
+						numberOfExpandedLevels: 4
+					}
+				}"
+				mode="SingleSelectMaster"
+				selectionChange="onSelectionChange">
+				<StandardTreeItem
+					title="{masterView>text}"
+					icon="{masterView>ref}"/>
+			</Tree>
+<!--
 			<List
 				id="list"
 				items="{
@@ -71,6 +96,7 @@
 					</ObjectListItem>
 				</items>
 			</List>
+-->			
 		</semantic:content>
 
 		<semantic:sort>

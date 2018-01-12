@@ -26,12 +26,13 @@ sap.ui.define([
 			 */
 			onInit : function () {
 				// Control state model
-				var oList = this.byId("list"),
-					oViewModel = this._createViewModel(),
+				//var oList = this.byId("list");
+				var oList = this.byId("tree");
+				var	oViewModel = this._createViewModel();
 					// Put down master list's original value for busy indicator delay,
 					// so it can be restored later on. Busy handling on the master list is
 					// taken care of by the master list itself.
-					iOriginalBusyDelay = oList.getBusyIndicatorDelay();
+				var iOriginalBusyDelay = oList.getBusyIndicatorDelay();
 
 				this._oGroupSortState = new GroupSortState(oViewModel, grouper.groupUnitNumber(this.getResourceBundle()));
 
@@ -210,6 +211,7 @@ sap.ui.define([
 			 */
 			onBypassed : function () {
 				this._oList.removeSelections(true);
+				this._loadData();
 			},
 
 			/**
@@ -259,7 +261,9 @@ sap.ui.define([
 			 * listLoading is done and the first item in the list is known
 			 * @private
 			 */
-			_onMasterMatched :  function() {
+			_onMasterMatched : function () {
+				this._loadData();
+				/*
 				this.getOwnerComponent().oListSelector.oWhenListLoadingIsDone.then(
 					function (mParams) {
 						if (mParams.list.getMode() === "None") {
@@ -275,6 +279,79 @@ sap.ui.define([
 						this.getRouter().getTargets().display("detailNoObjectsAvailable");
 					}.bind(this)
 				);
+				*/
+			},
+
+			_loadData : function () {
+				var that = this;
+				var oModel = this.getModel();
+				var bHostsLoaded = false;
+				var bNamespacesLoaded = false;
+				oModel.read("/Hosts", {
+					urlParameters: {
+						$expand: "SensorDetails"
+					},
+					success: function (oData) {
+						that.aHostsData = oData;
+						bHostsLoaded = true;
+						if (bHostsLoaded && bNamespacesLoaded) {
+							that._createMasterViewData(that.aHostsData, that.aNamespacesData);
+						}
+					}
+				});
+				
+				oModel.read("/Namespaces", {
+					success: function (oData) {
+						that.aNamespacesData = oData;
+						bNamespacesLoaded = true;
+						if (bHostsLoaded && bNamespacesLoaded) {
+							that._createMasterViewData(that.aHostsData, that.aNamespacesData);
+						}
+					}
+				});
+			},
+			
+			_createMasterViewData : function (aHostsData, aNamespacesData) {
+				var oViewModel = this.getModel("masterView");
+				var oData = {};
+				var aHosts = [];
+				var aNamespaces = [];
+				var i;
+				var ii;
+				var aChildNodes;
+				var oChildNode;
+				var oNode;
+				
+				for (i = 0; i < aHostsData.results.length; i++) {
+					aChildNodes = [];
+					for (ii = 0; ii < aHostsData.results[i].SensorDetails.results.length; ii++ ) {
+						oChildNode = {
+							//object: aHostsData.results[i].SensorDetails.results[ii],
+							text: aHostsData.results[i].SensorDetails.results[ii].SensorName,
+							ref: "sap-icon://temperature"
+						};
+						aChildNodes.push(oChildNode);
+					}
+					oNode = {
+						//object: aHostsData.results[i],
+						text: aHostsData.results[i].HostName,
+						ref: "sap-icon://it-host",
+						nodes: aChildNodes
+					};
+					aHosts.push(oNode);
+				}
+				oData.Hosts = aHosts;
+				for (i = 0; i < aNamespacesData.results.length; i++) {
+					oNode = {
+						//object: aNamespacesData.results[i],
+						key: aNamespacesData.results[i].Id,
+						text: aNamespacesData.results[i].NamespaceName,
+						ref: "sap-icon://cloud"
+					};
+					aNamespaces.push(oNode);
+				}
+				oData.Namespaces = aNamespaces;
+				oViewModel.setProperty("/data", oData);
 			},
 
 			/**
